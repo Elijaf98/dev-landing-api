@@ -43,6 +43,8 @@ services:
       SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
       MAIL_FROM: ${MAIL_FROM:-no-reply@devlanding.local}
       OWNER_EMAIL: ${OWNER_EMAIL:-owner@example.com}
+      # Пауза между письмами (сек). На free SMTP (Mailtrap) ставим больше нуля.
+      EMAIL_SEND_DELAY_SECONDS: ${EMAIL_SEND_DELAY_SECONDS:-0}
     ports:
       - "8000:8000"
     volumes:
