@@ -9,6 +9,7 @@
 не «падает» из-за проблем с почтой.
 """
 
+import asyncio
 from email.message import EmailMessage
 from html import escape
 
@@ -47,6 +48,11 @@ class EmailService:
             subject=f"📬 Новое обращение ({_CATEGORY_RU.get(analysis.category, analysis.category)})",
             html=self._owner_html(contact, analysis, request_id),
         )
+
+        # Пауза перед вторым письмом — обходим лимит «писем в секунду» у бесплатных SMTP.
+        if settings.email_send_delay_seconds > 0:
+            await asyncio.sleep(settings.email_send_delay_seconds)
+
         user_ok = await self._safe_send(
             to=str(contact.email),
             subject="Мы получили ваше обращение",

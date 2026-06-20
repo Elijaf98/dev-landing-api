@@ -51,6 +51,10 @@ class Settings(BaseSettings):
     smtp_use_tls: bool = True
     mail_from: str = "Dev Landing <no-reply@devlanding.local>"
     owner_email: str = "owner@example.com"  # реальный адрес задаётся через .env
+    # Пауза между двумя письмами (владельцу и пользователю). На бесплатных SMTP
+    # вроде Mailtrap есть лимит «писем в секунду» — небольшая задержка спасает.
+    # В проде с выделенным SMTP можно оставить 0.
+    email_send_delay_seconds: float = 0.0
 
     # --- Rate limiting ---
     rate_limit_max_requests: int = 5
