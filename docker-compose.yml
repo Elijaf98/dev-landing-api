@@ -27,6 +27,11 @@ services:
       DATABASE_URL: postgresql+asyncpg://devlanding:devlanding@db:5432/devlanding
       APP_ENV: production
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8000}
+      # X-Forwarded-For доверяем, только если стоим за nginx (на проде задай true)
+      TRUST_PROXY: ${TRUST_PROXY:-false}
+      # Rate limiting
+      RATE_LIMIT_MAX_REQUESTS: ${RATE_LIMIT_MAX_REQUESTS:-5}
+      RATE_LIMIT_WINDOW_SECONDS: ${RATE_LIMIT_WINDOW_SECONDS:-3600}
       # AI (пусто -> fallback)
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       AI_MODEL: ${AI_MODEL:-claude-haiku-4-5}
@@ -37,7 +42,7 @@ services:
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
       MAIL_FROM: ${MAIL_FROM:-no-reply@devlanding.local}
-      OWNER_EMAIL: ${OWNER_EMAIL:-elijafarafonov@gmail.com}
+      OWNER_EMAIL: ${OWNER_EMAIL:-owner@example.com}
     ports:
       - "8000:8000"
     volumes:

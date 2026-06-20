@@ -29,6 +29,11 @@ class Settings(BaseSettings):
     # что неудобно править руками. Разбор — в cors_origins_list.
     cors_origins: str = "http://localhost:5500,http://127.0.0.1:5500,http://localhost:8000"
 
+    # Доверять ли заголовку X-Forwarded-For при определении IP клиента.
+    # True — только если перед сервисом стоит доверенный прокси (nginx).
+    # При прямом доступе оставляем False, иначе IP легко подделать и обойти rate limit.
+    trust_proxy: bool = False
+
     # --- База данных ---
     database_url: str = ""
 
@@ -45,7 +50,7 @@ class Settings(BaseSettings):
     smtp_password: str = ""
     smtp_use_tls: bool = True
     mail_from: str = "Dev Landing <no-reply@devlanding.local>"
-    owner_email: str = "elijafarafonov@gmail.com"
+    owner_email: str = "owner@example.com"  # реальный адрес задаётся через .env
 
     # --- Rate limiting ---
     rate_limit_max_requests: int = 5

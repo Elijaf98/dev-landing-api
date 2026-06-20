@@ -213,7 +213,7 @@ class AIService:
     @staticmethod
     def _auto_summary(contact: ContactRequestIn) -> str:
         text = " ".join(contact.message.split())
-        short = text[:140] + "…" if len(text) > 140 else text
+        short = (text[:140] + "…") if len(text) > 140 else text
         return f"Обращение от {contact.name}: {short}"
 
     @staticmethod

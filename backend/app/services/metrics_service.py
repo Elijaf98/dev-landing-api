@@ -2,13 +2,15 @@
 
 from datetime import datetime, timedelta, timezone
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.db.models import ContactRequest
 from app.repositories.contact_repository import ContactRepository
 from app.schemas.common import MetricsResponse
 
 
 class MetricsService:
-    def __init__(self, session):
+    def __init__(self, session: AsyncSession):
         self.repo = ContactRepository(session)
 
     async def collect(self) -> MetricsResponse:

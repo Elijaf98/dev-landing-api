@@ -16,16 +16,20 @@ import uuid
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
+from app.config import get_settings
 from app.core.logger import get_logger
 
 logger = get_logger("app.access")
+settings = get_settings()
 
 
 def get_client_ip(request: Request) -> str:
-    # За обратным прокси реальный адрес — в X-Forwarded-For (берём первый).
-    forwarded = request.headers.get("x-forwarded-for")
-    if forwarded:
-        return forwarded.split(",")[0].strip()
+    # X-Forwarded-For доверяем только за доверенным прокси, иначе заголовок легко
+    # подделать и обойти rate limiting (взять чужой IP). См. settings.trust_proxy.
+    if settings.trust_proxy:
+        forwarded = request.headers.get("x-forwarded-for")
+        if forwarded:
+            return forwarded.split(",")[0].strip()
     return request.client.host if request.client else "unknown"
 
 

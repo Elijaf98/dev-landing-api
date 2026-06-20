@@ -36,7 +36,10 @@ class ContactRepository:
             ai_provider=analysis.provider,
         )
         self.session.add(obj)
-        await self.session.commit()
+        # flush отправляет INSERT и подтягивает id/created_at, но транзакцию
+        # фиксирует сервисный слой (commit) — управление транзакцией там, где
+        # выстроена бизнес-операция (unit of work).
+        await self.session.flush()
         await self.session.refresh(obj)
         return obj
 

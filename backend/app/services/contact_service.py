@@ -5,6 +5,8 @@
 Контроллер не знает деталей: он передаёт данные и получает готовый анализ.
 """
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.core.logger import get_logger
 from app.repositories.contact_repository import ContactRepository
 from app.schemas.contact import AIAnalysis, ContactRequestIn
@@ -15,7 +17,8 @@ logger = get_logger("app.contact")
 
 
 class ContactService:
-    def __init__(self, session):
+    def __init__(self, session: AsyncSession):
+        self.session = session
         self.repo = ContactRepository(session)
         self.ai = get_ai_service()
         self.email = get_email_service()
@@ -29,10 +32,11 @@ class ContactService:
         # 1. AI-анализ (с гарантированным fallback внутри сервиса).
         analysis = await self.ai.analyze(data)
 
-        # 2. Сохраняем обращение вместе с результатом анализа.
+        # 2. Сохраняем обращение и фиксируем транзакцию здесь, на уровне сервиса.
         saved = await self.repo.create(data, analysis, ip_address)
+        await self.session.commit()
 
-        # 3. Письма — best-effort, ошибки не валят запрос.
+        # 3. Письма — best-effort, ошибки не валят запрос (обращение уже сохранено).
         delivery = await self.email.send_contact_notifications(data, analysis, request_id)
 
         logger.info(
