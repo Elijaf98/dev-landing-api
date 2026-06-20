@@ -9,6 +9,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_redoc_html
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -55,6 +56,7 @@ app = FastAPI(
     ),
     openapi_tags=TAGS_METADATA,
     lifespan=lifespan,
+    redoc_url=None,  # свой /redoc со стабильным CDN (см. ниже)
 )
 
 # --- CORS (внешний слой) ---
@@ -77,6 +79,17 @@ register_exception_handlers(app)
 app.include_router(contact.router)
 app.include_router(health.router)
 app.include_router(metrics.router)
+
+
+@app.get("/redoc", include_in_schema=False)
+async def redoc_html():
+    # Дефолтный ReDoc грузит redoc@next (предрелиз) — он бывает битым на CDN.
+    # Фиксируем стабильную мажорную версию.
+    return get_redoc_html(
+        openapi_url=app.openapi_url,
+        title=f"{settings.app_name} — ReDoc",
+        redoc_js_url="https://cdn.jsdelivr.net/npm/redoc@2/bundles/redoc.standalone.js",
+    )
 
 
 def _resolve_frontend_dir() -> Path | None:
