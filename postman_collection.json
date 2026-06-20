@@ -1,0 +1,99 @@
+{
+  "info": {
+    "name": "Dev Landing API",
+    "description": "Коллекция запросов к бэкенду лендинга разработчика. Базовый адрес задаётся переменной base_url (по умолчанию http://localhost:8000).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Contact — валидное обращение (заказ)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Илья Фарафонов\",\n  \"phone\": \"+7 (999) 123-45-67\",\n  \"email\": \"ilya@example.com\",\n  \"message\": \"Здравствуйте! Хочу заказать лендинг под ключ, обсудим бюджет и сроки?\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/contact",
+          "host": ["{{base_url}}"],
+          "path": ["api", "contact"]
+        },
+        "description": "Полный цикл: валидация → AI-анализ → сохранение → письма. Ожидается 201."
+      }
+    },
+    {
+      "name": "Contact — жалоба (негатив)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Мария\",\n  \"phone\": \"89991112233\",\n  \"email\": \"maria@example.com\",\n  \"message\": \"Это просто ужас, ничего не работает, я очень недоволен и хочу жалобу!\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/contact",
+          "host": ["{{base_url}}"],
+          "path": ["api", "contact"]
+        },
+        "description": "Демонстрация определения негативной тональности и высокого приоритета."
+      }
+    },
+    {
+      "name": "Contact — ошибка валидации (422)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Я\",\n  \"phone\": \"abc\",\n  \"email\": \"not-an-email\",\n  \"message\": \"коротко\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/contact",
+          "host": ["{{base_url}}"],
+          "path": ["api", "contact"]
+        },
+        "description": "Невалидные данные. Ожидается 422 с разбором ошибок по полям."
+      }
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/health",
+          "host": ["{{base_url}}"],
+          "path": ["api", "health"]
+        },
+        "description": "Статус сервиса: версия, uptime, доступность БД / AI / почты."
+      }
+    },
+    {
+      "name": "Metrics",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/metrics",
+          "host": ["{{base_url}}"],
+          "path": ["api", "metrics"]
+        },
+        "description": "Агрегированная статистика обращений."
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+# Билд-контекст — корень проекта. Лишнее в образ не тащим.
+backend/.venv/
+backend/__pycache__/
+**/__pycache__/
+*.pyc
+backend/.pytest_cache/
+backend/tests/
+backend/logs/
+backend/data/
+*.db
+*.sqlite3
+.env
+.git/
+tmp/
+Тест.pdf

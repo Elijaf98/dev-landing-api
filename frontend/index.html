@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Веб-разработчик · Backend / Full-Stack</title>
+  <meta name="description" content="Лендинг-презентация веб-разработчика. Backend, API, интеграции." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Шапка -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="#" class="nav__logo">&lt;dev/&gt;</a>
+      <nav class="nav__links">
+        <a href="#about">Обо мне</a>
+        <a href="#stack">Стек</a>
+        <a href="#projects">Проекты</a>
+        <a href="#contact" class="nav__cta">Связаться</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <p class="hero__badge">● Открыт к новым проектам</p>
+      <!-- TODO: заменить имя на реальное -->
+      <h1 class="hero__title">Иван Разработчик</h1>
+      <p class="hero__subtitle">
+        Backend / Full-Stack разработчик. Проектирую API, пишу надёжные сервисы
+        и интегрирую AI там, где это приносит пользу.
+      </p>
+      <div class="hero__actions">
+        <a href="#contact" class="btn btn--primary">Обсудить задачу</a>
+        <a href="/docs" target="_blank" rel="noopener" class="btn btn--ghost">Документация API →</a>
+      </div>
+    </div>
+    <div class="hero__glow" aria-hidden="true"></div>
+  </section>
+
+  <main class="container">
+    <!-- Обо мне -->
+    <section id="about" class="section">
+      <h2 class="section__title">Обо мне</h2>
+      <p class="section__lead">
+        Делаю backend, которому можно доверять: продуманная архитектура,
+        обработка ошибок, логирование и тесты. Эта страница — витрина для
+        небольшого демо-сервиса: форма ниже отправляет реальный запрос в API,
+        который валидирует данные, анализирует обращение через AI и присылает
+        уведомления.
+      </p>
+    </section>
+
+    <!-- Стек -->
+    <section id="stack" class="section">
+      <h2 class="section__title">Технологии</h2>
+      <div class="chips">
+        <span class="chip">Python</span>
+        <span class="chip">FastAPI</span>
+        <span class="chip">PostgreSQL</span>
+        <span class="chip">SQLAlchemy</span>
+        <span class="chip">Docker</span>
+        <span class="chip">REST API</span>
+        <span class="chip">Anthropic Claude</span>
+        <span class="chip">Pytest</span>
+      </div>
+    </section>
+
+    <!-- Проекты (плейсхолдеры) -->
+    <section id="projects" class="section">
+      <h2 class="section__title">Проекты</h2>
+      <div class="cards">
+        <article class="card">
+          <div class="card__tag">API</div>
+          <h3>Contact API c AI</h3>
+          <p>Сервис обратной связи: валидация, анализ тональности, авто-ответ, метрики.</p>
+        </article>
+        <article class="card">
+          <div class="card__tag">Backend</div>
+          <h3>Сервис уведомлений</h3>
+          <p>Очереди, ретраи, доставка в почту и мессенджеры. Плейсхолдер-кейс.</p>
+        </article>
+        <article class="card">
+          <div class="card__tag">Интеграции</div>
+          <h3>AI-ассистент</h3>
+          <p>Классификация и приоритизация входящих обращений. Плейсхолдер-кейс.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Форма -->
+    <section id="contact" class="section">
+      <h2 class="section__title">Связаться со мной</h2>
+      <p class="section__lead">
+        Опишите задачу — форма уйдёт в API, обращение проанализирует AI,
+        а вам придёт подтверждение на почту.
+      </p>
+
+      <form id="contact-form" class="form" novalidate>
+        <div class="form__row">
+          <div class="form__group">
+            <label for="name">Имя</label>
+            <input type="text" id="name" name="name" placeholder="Как к вам обращаться" required />
+            <small class="form__error" data-error-for="name"></small>
+          </div>
+          <div class="form__group">
+            <label for="phone">Телефон</label>
+            <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required />
+            <small class="form__error" data-error-for="phone"></small>
+          </div>
+        </div>
+
+        <div class="form__group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required />
+          <small class="form__error" data-error-for="email"></small>
+        </div>
+
+        <div class="form__group">
+          <label for="message">Сообщение</label>
+          <textarea id="message" name="message" rows="5" placeholder="Расскажите о проекте…" required></textarea>
+          <small class="form__error" data-error-for="message"></small>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--block" id="submit-btn">
+          Отправить обращение
+        </button>
+      </form>
+
+      <!-- Результат отправки -->
+      <div id="result" class="result" hidden>
+        <div class="result__head">
+          <span class="result__icon">✓</span>
+          <span class="result__title">Обращение принято</span>
+        </div>
+        <p class="result__text" id="result-text"></p>
+        <div class="result__analysis" id="result-analysis"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 · Демо-лендинг разработчика · <a href="/docs" target="_blank" rel="noopener">API Docs</a></p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

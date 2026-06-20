@@ -1,0 +1,51 @@
+# Поднять весь стек одной командой:  docker compose up --build
+# Работает «из коробки» даже без секретов: без ANTHROPIC_API_KEY AI уходит
+# в fallback, без SMTP письма пишутся в лог. Секреты можно положить в .env
+# рядом с этим файлом — Compose подхватит их автоматически.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: devlanding
+      POSTGRES_PASSWORD: devlanding
+      POSTGRES_DB: devlanding
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devlanding -d devlanding"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql+asyncpg://devlanding:devlanding@db:5432/devlanding
+      APP_ENV: production
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8000}
+      # AI (пусто -> fallback)
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-claude-haiku-4-5}
+      # SMTP (пусто -> письма в лог)
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-2525}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
+      MAIL_FROM: ${MAIL_FROM:-no-reply@devlanding.local}
+      OWNER_EMAIL: ${OWNER_EMAIL:-elijafarafonov@gmail.com}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/logs:/app/logs
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:

@@ -1,0 +1,49 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Виртуальные окружения
+.venv/
+venv/
+env/
+
+# --- Секреты и конфиги ---
+.env
+*.env
+!.env.example
+
+# --- Логи и данные рантайма ---
+backend/logs/
+*.log
+backend/data/
+*.sqlite3
+*.db
+
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+
+# --- ОС ---
+.DS_Store
+Thumbs.db
+
+# --- Тесты/кеш ---
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Локальные планы (рабочие заметки, не для репо)
+tmp/
+
+# Артефакты отладки / Playwright
+.playwright-mcp/
+landing-full.jpeg
+form-result.jpeg
+
+# Исходное ТЗ (не публикуем)
+Тест.pdf
