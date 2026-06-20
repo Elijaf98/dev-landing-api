@@ -1,5 +1,10 @@
 # Dev Landing API — бэкенд лендинга-презентации разработчика
 
+[![CI](https://github.com/Elijaf98/dev-landing-api/actions/workflows/ci.yml/badge.svg)](https://github.com/Elijaf98/dev-landing-api/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.12-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688)
+![Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen)
+
 Бэкенд-сервис для формы обратной связи лендинга с полноценным REST API и
 AI-анализом обращений. Полный цикл одного запроса:
 
@@ -461,8 +466,17 @@ curl -X POST http://localhost:8000/api/contact \
 
 Обращения хранятся в таблице `contact_requests` (PostgreSQL или SQLite) вместе
 с результатом AI-анализа. Схема — в [`models.py`](backend/app/db/models.py).
-Таблицы создаются автоматически при старте (для прод-эволюции схемы в проект
-легко добавляется Alembic).
+
+Для локалки/тестов таблицы создаются автоматически при старте (`create_all`).
+Для управляемой эволюции схемы настроен **Alembic** (async, URL из настроек):
+
+```bash
+cd backend
+alembic upgrade head        # применить миграции
+alembic revision --autogenerate -m "описание"   # сгенерировать новую
+```
+
+Миграции лежат в [`backend/alembic/versions/`](backend/alembic/versions/).
 
 ### Логи
 
@@ -498,10 +512,18 @@ pip install -r requirements-dev.txt
 pytest
 ```
 
-Покрыто: health-check, успешный приём обращения, валидация (email, имя, телефон,
-сообщение), эвристика fallback (тональность, категории, приоритет), rate limiting,
-метрики. Тесты используют отдельную БД и принудительный fallback (реальный ключ
-не дёргается).
+Покрыто (27 тестов, ~92% покрытия): health-check, успешный приём обращения,
+валидация (email, имя, телефон, сообщение), эвристика fallback и **ветка Claude
+с мокнутым SDK**, **email-сервис с мокнутым SMTP** (отправка/dry-run/best-effort/
+экранирование), rate limiting, метрики и их защита по API-ключу. Тесты используют
+отдельную БД и принудительный fallback (реальный ключ/SMTP не дёргаются).
+
+### CI/CD (GitHub Actions)
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml): на каждый push/PR в `main`
+прогоняются тесты с покрытием; при пуше в `main` после зелёных тестов —
+автодеплой на сервер по SSH (`git pull` + `docker compose up -d --build`).
+Доступы к серверу хранятся в GitHub Secrets.
 
 ---
 

@@ -17,3 +17,23 @@ async def test_metrics_counts_requests(client):
     # Сумма по любой из разбивок должна совпадать с общим числом обращений.
     assert sum(data["by_category"].values()) == 2
     assert data["last_request_at"] is not None
+
+
+async def test_metrics_open_without_key(client):
+    # По умолчанию ключ не задан — метрики открыты.
+    assert (await client.get("/api/metrics")).status_code == 200
+
+
+async def test_metrics_requires_key_when_configured(client, monkeypatch):
+    from app.core import security
+
+    monkeypatch.setattr(security.settings, "metrics_api_key", "secret-key")
+
+    # Без ключа — 401.
+    unauthorized = await client.get("/api/metrics")
+    assert unauthorized.status_code == 401
+    assert unauthorized.json()["error"] == "unauthorized"
+
+    # С верным ключом — 200.
+    authorized = await client.get("/api/metrics", headers={"X-API-Key": "secret-key"})
+    assert authorized.status_code == 200

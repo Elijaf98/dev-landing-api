@@ -60,6 +60,14 @@ class Settings(BaseSettings):
     rate_limit_max_requests: int = 5
     rate_limit_window_seconds: int = 3600
 
+    # Ключ для защиты /api/metrics. Пусто — эндпоинт открыт (демо).
+    # Задан — нужен заголовок X-API-Key с этим значением.
+    metrics_api_key: str = ""
+
+    # Бэкенд rate-лимитера. Пусто — in-memory (один инстанс).
+    # redis://host:port/db — распределённый лимит через Redis (для масштабирования).
+    redis_url: str = ""
+
     # --- Логи ---
     log_level: str = "INFO"
     log_file: str = "logs/app.log"

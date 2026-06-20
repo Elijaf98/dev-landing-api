@@ -11,6 +11,7 @@ email-validator==2.2.0
 SQLAlchemy==2.0.36
 asyncpg==0.30.0
 aiosqlite==0.20.0
+alembic==1.14.0
 
 # AI-провайдер
 anthropic==0.42.0
@@ -20,3 +21,6 @@ aiosmtplib==3.0.2
 
 # HTTP-клиент (нужен anthropic-у)
 httpx==0.28.1
+
+# Распределённый rate limiting (опционально, при заданном REDIS_URL)
+redis==5.2.1

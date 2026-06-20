@@ -30,6 +30,12 @@ class AppError(Exception):
         super().__init__(self.message)
 
 
+class UnauthorizedError(AppError):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    error_code = "unauthorized"
+    message = "Требуется корректный API-ключ"
+
+
 class RateLimitError(AppError):
     status_code = status.HTTP_429_TOO_MANY_REQUESTS
     error_code = "rate_limit_exceeded"
