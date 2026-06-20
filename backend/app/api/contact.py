@@ -1,6 +1,6 @@
 """Контроллер формы обратной связи."""
 
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, BackgroundTasks, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.database import get_session
@@ -31,17 +31,24 @@ router = APIRouter(prefix="/api", tags=["Contact"])
 async def submit_contact(
     payload: ContactRequestIn,
     request: Request,
+    background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_session),
 ) -> ContactResponse:
+    request_id = request.state.request_id
     service = ContactService(session)
+
+    # AI-анализ + сохранение — синхронно (результат нужен в ответе).
     analysis = await service.process(
         payload,
         ip_address=request.state.client_ip,
-        request_id=request.state.request_id,
+        request_id=request_id,
     )
 
+    # Письма — в фоне: ответ клиенту не ждёт SMTP.
+    background_tasks.add_task(service.send_notifications, payload, analysis, request_id)
+
     return ContactResponse(
-        request_id=request.state.request_id,
+        request_id=request_id,
         message="Спасибо! Мы получили ваше обращение и скоро свяжемся с вами.",
         analysis=AIAnalysisPublic(
             sentiment=analysis.sentiment,
