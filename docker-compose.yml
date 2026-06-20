@@ -46,7 +46,10 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend/logs:/app/logs
+      # Named volume, а не bind mount: права наследуются из образа (папка под
+      # непривилегированным appuser), иначе контейнер не сможет писать логи.
+      # Достать логи: docker compose exec backend cat logs/app.log
+      - backend_logs:/app/logs
     depends_on:
       db:
         condition: service_healthy
@@ -54,3 +57,4 @@ services:
 
 volumes:
   pgdata:
+  backend_logs:
